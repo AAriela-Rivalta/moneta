@@ -7,6 +7,7 @@ import { Modal } from '@/components/ui/Modal';
 import { SegmentedControl } from '@/components/ui/SegmentedControl';
 import { useAppData } from '@/context/app-data/useAppData';
 import { useToast } from '@/context/toast/useToast';
+import { amountToField, suggestCategoryId, type ReceiptDraft } from '@/domain/receipt';
 import {
   hasErrors,
   parseAmount,
@@ -18,6 +19,7 @@ import { useCategories } from '@/hooks/useCategories';
 import { useCurrency } from '@/hooks/useCurrency';
 import { todayISO } from '@/lib/dates';
 import type { Transaction, TransactionInput, TransactionType } from '@/types/finance';
+import { ReceiptAttach } from './ReceiptAttach';
 
 interface TransactionFormModalProps {
   transaction?: Transaction;
@@ -53,8 +55,10 @@ export function TransactionFormModal({ transaction, initialType, onClose }: Tran
   const [values, setValues] = useState(() => initialValues(transaction, initialType));
   const [errors, setErrors] = useState<FormErrors<TransactionFormValues>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [receiptKey, setReceiptKey] = useState(0);
   const keepOpen = useRef(false);
   const descriptionRef = useRef<HTMLInputElement>(null);
+  const dateTouched = useRef(false);
 
   const isEditing = Boolean(transaction);
   const linkedGoal = transaction?.goalId ? data.goals.find((goal) => goal.id === transaction.goalId) : undefined;
@@ -69,6 +73,19 @@ export function TransactionFormModal({ transaction, initialType, onClose }: Tran
 
   const changeType = (type: TransactionType) => {
     update({ type, categoryId: categoryMap.get(values.categoryId)?.type === type ? values.categoryId : '' });
+  };
+
+  const applyReceipt = (draft: ReceiptDraft) => {
+    const suggestedCategory = draft.merchant ? suggestCategoryId(draft.merchant, data.transactions) : null;
+    const next: TransactionFormValues = {
+      ...values,
+      description: values.description.trim() ? values.description : (draft.merchant ?? '').slice(0, 80),
+      amount: values.amount.trim() ? values.amount : draft.amount !== null ? amountToField(draft.amount) : values.amount,
+      date: !isEditing && !dateTouched.current && draft.date ? draft.date : values.date,
+      categoryId: values.categoryId || suggestedCategory || values.categoryId,
+    };
+    setValues(next);
+    if (submitted) setErrors(validateTransaction(next, categoryMap, todayISO()));
   };
 
   const handleSubmit = (event: FormEvent) => {
@@ -102,6 +119,8 @@ export function TransactionFormModal({ transaction, initialType, onClose }: Tran
 
     if (keepOpen.current) {
       keepOpen.current = false;
+      dateTouched.current = false;
+      setReceiptKey((key) => key + 1);
       setValues({ ...initialValues(undefined, values.type), date: values.date, categoryId: values.categoryId });
       setSubmitted(false);
       setErrors({});
@@ -143,6 +162,8 @@ export function TransactionFormModal({ transaction, initialType, onClose }: Tran
           <SegmentedControl options={TYPE_OPTIONS} value={values.type} onChange={changeType} ariaLabel="Tipo de movimiento" fullWidth />
         )}
 
+        {values.type === 'expense' && <ReceiptAttach key={receiptKey} onApply={applyReceipt} />}
+
         <Field label="Descripción" htmlFor="tx-description" error={errors.description} required>
           <TextInput
             ref={descriptionRef}
@@ -176,7 +197,16 @@ export function TransactionFormModal({ transaction, initialType, onClose }: Tran
             />
           </Field>
           <Field label="Fecha" htmlFor="tx-date" error={errors.date} required>
-            <TextInput id="tx-date" type="date" value={values.date} onChange={(event) => update({ date: event.target.value })} invalid={Boolean(errors.date)} />
+            <TextInput
+              id="tx-date"
+              type="date"
+              value={values.date}
+              onChange={(event) => {
+                dateTouched.current = true;
+                update({ date: event.target.value });
+              }}
+              invalid={Boolean(errors.date)}
+            />
           </Field>
         </div>
 
