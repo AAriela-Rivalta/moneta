@@ -7,6 +7,7 @@ const DashboardPage = lazy(() => import('@/features/dashboard/DashboardPage'));
 const TransactionsPage = lazy(() => import('@/features/transactions/TransactionsPage'));
 const BudgetsPage = lazy(() => import('@/features/budgets/BudgetsPage'));
 const StatisticsPage = lazy(() => import('@/features/statistics/StatisticsPage'));
+const HabitsPage = lazy(() => import('@/features/habits/HabitsPage'));
 const GoalsPage = lazy(() => import('@/features/goals/GoalsPage'));
 const AssistantPage = lazy(() => import('@/features/assistant/AssistantPage'));
 const SettingsPage = lazy(() => import('@/features/settings/SettingsPage'));
@@ -22,6 +23,7 @@ export const router = createBrowserRouter([
       { path: 'movimientos', element: <TransactionsPage /> },
       { path: 'presupuestos', element: <BudgetsPage /> },
       { path: 'estadisticas', element: <StatisticsPage /> },
+      { path: 'habitos', element: <HabitsPage /> },
       { path: 'objetivos', element: <GoalsPage /> },
       { path: 'asistente', element: <AssistantPage /> },
       { path: 'configuracion', element: <SettingsPage /> },
