@@ -40,7 +40,7 @@ const monthlyBalanceRule: AssistantRule = {
           topic: 'income',
           title: `No registraste ingresos en ${ctx.monthLabel}`,
           message: `Llevás ${money(totals.expense)} en gastos sin ingresos asociados. Si ya cobraste, registralo para que el análisis sea preciso.`,
-          action: { label: 'Registrar ingreso', to: '/movimientos?nuevo=ingreso' },
+          action: { label: 'Registrar ingreso', to: '/app/movimientos?nuevo=ingreso' },
         },
       ];
     }
@@ -52,7 +52,7 @@ const monthlyBalanceRule: AssistantRule = {
           title: 'Gastaste más de lo que ingresó',
           message: `En ${ctx.monthLabel} tus gastos superan a tus ingresos por ${money(-totals.balance)}. Revisá las categorías con mayor consumo para equilibrar el mes.`,
           highlight: money(totals.balance),
-          action: { label: 'Ver estadísticas', to: '/estadisticas' },
+          action: { label: 'Ver estadísticas', to: '/app/estadisticas' },
         },
       ];
     }
@@ -136,7 +136,7 @@ const topCategoriesRule: AssistantRule = {
         title: top.percentage >= 40 ? `${top.name} concentra el ${pct(top.percentage)} de tus gastos` : `Tu mayor gasto es ${top.name}`,
         message: `En ${ctx.monthLabel} destinaste ${money(top.amount)} a ${top.name}${followers ? `; le siguen ${followers}` : ''}.${suggestion}`,
         highlight: pct(top.percentage),
-        action: { label: 'Ver estadísticas', to: '/estadisticas' },
+        action: { label: 'Ver estadísticas', to: '/app/estadisticas' },
       },
     ];
   },
@@ -221,7 +221,7 @@ const budgetsRule: AssistantRule = {
     if (statuses.length === 0) return [];
     const { money } = ctx;
     const results: RuleResult[] = [];
-    const budgetsAction = { label: 'Ver presupuestos', to: '/presupuestos' };
+    const budgetsAction = { label: 'Ver presupuestos', to: '/app/presupuestos' };
 
     for (const status of statuses) {
       const name = status.category?.name ?? 'Sin categoría';
@@ -270,7 +270,7 @@ const missingBudgetsRule: AssistantRule = {
   evaluate(ctx) {
     if (ctx.breakdown.length === 0) return [];
     const budgeted = new Set(ctx.budgetStatuses.map((status) => status.budget.categoryId));
-    const action = { label: 'Crear presupuesto', to: '/presupuestos' };
+    const action = { label: 'Crear presupuesto', to: '/app/presupuestos' };
 
     if (budgeted.size === 0) {
       const target = ctx.breakdown.find((item) => fixedShare(ctx, item.categoryId, item.amount) < 0.7) ?? ctx.breakdown[0];
@@ -437,7 +437,7 @@ const goalsRule: AssistantRule = {
   evaluate(ctx) {
     const { money } = ctx;
     const goals = ctx.data.goals;
-    const action = { label: 'Ver objetivos', to: '/objetivos' };
+    const action = { label: 'Ver objetivos', to: 	'/app/objetivos' };
 
     if (goals.length === 0) {
       return [
@@ -448,7 +448,7 @@ const goalsRule: AssistantRule = {
           message: `Ponerle nombre, monto y fecha a una meta aumenta las chances de cumplirla.${
             ctx.capacity > 0 ? ` Tu capacidad de ahorro promedio es de ${money(ctx.capacity)} por mes.` : ''
           }`,
-          action: { label: 'Crear objetivo', to: '/objetivos?nuevo=1' },
+          action: { label: 'Crear objetivo', to: '/app/objetivos?nuevo=1' },
         },
       ];
     }
@@ -538,7 +538,7 @@ const emergencyFundRule: AssistantRule = {
           topic: 'savings',
           title: 'Considerá armar un fondo de emergencia',
           message: `Se recomienda reservar entre 3 y 6 meses de gastos para imprevistos. Según tu promedio, serían entre ${money(min)} y ${money(max)}.`,
-          action: { label: 'Crear objetivo', to: '/objetivos?nuevo=1' },
+          action: { label: 'Crear objetivo', to: '/app/objetivos?nuevo=1' },
         },
       ];
     }

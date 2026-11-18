@@ -1,23 +1,27 @@
-import { Activity, CalendarRange, Repeat } from 'lucide-react';
-import { useMemo } from 'react';
-import { PeriodSelector } from '@/components/shared/PeriodSelector';
-import { ButtonLink } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
-import { EmptyState } from '@/components/ui/EmptyState';
-import { PageHeader } from '@/components/ui/PageHeader';
-import { StatCard } from '@/components/ui/StatCard';
-import { useAppData } from '@/context/app-data/useAppData';
-import { usePeriod } from '@/context/period/usePeriod';
-import { buildHabitsReport } from '@/domain/habits';
-import { useCategories } from '@/hooks/useCategories';
-import { useCurrency } from '@/hooks/useCurrency';
-import { formatNumber, formatPercent } from '@/lib/format';
-import { MonthRhythmCard } from './components/MonthRhythmCard';
-import { RepeatPurchasesCard } from './components/RepeatPurchasesCard';
-import { StabilityCard } from './components/StabilityCard';
-import { RHYTHM_RANGE, STABILITY_UI } from './habitUi';
+import { Activity, CalendarRange, Repeat } from "lucide-react";
+import { useMemo } from "react";
+import { PeriodSelector } from "@/components/shared/PeriodSelector";
+import { ButtonLink } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { StatCard } from "@/components/ui/StatCard";
+import { useAppData } from "@/context/app-data/useAppData";
+import { usePeriod } from "@/context/period/usePeriod";
+import { buildHabitsReport } from "@/domain/habits";
+import { useCategories } from "@/hooks/useCategories";
+import { useCurrency } from "@/hooks/useCurrency";
+import { formatNumber, formatPercent } from "@/lib/format";
+import { MonthRhythmCard } from "./components/MonthRhythmCard";
+import { RepeatPurchasesCard } from "./components/RepeatPurchasesCard";
+import { StabilityCard } from "./components/StabilityCard";
+import { RHYTHM_RANGE, STABILITY_UI } from "./habitUi";
 
-const STABILITY_TONE = { stable: 'success', variable: 'ink', irregular: 'coral' } as const;
+const STABILITY_TONE = {
+  stable: "success",
+  variable: "ink",
+  irregular: "coral",
+} as const;
 
 export default function HabitsPage() {
   const { data } = useAppData();
@@ -30,7 +34,9 @@ export default function HabitsPage() {
     [data.transactions, categoryMap, monthKey],
   );
 
-  const dominant = report.rhythm.buckets.find((bucket) => bucket.id === report.rhythm.dominant);
+  const dominant = report.rhythm.buckets.find(
+    (bucket) => bucket.id === report.rhythm.dominant,
+  );
   const steadiest = report.stability[0];
 
   const header = (
@@ -50,7 +56,11 @@ export default function HabitsPage() {
             icon={Activity}
             title="Todavía no hay movimientos para analizar"
             description="Los hábitos se calculan a partir de tus gastos. Registrá el primero y volvé a esta pantalla."
-            action={<ButtonLink to="/movimientos?nuevo=gasto">Registrar un gasto</ButtonLink>}
+            action={
+              <ButtonLink to="/app/movimientos?nuevo=gasto">
+                Registrar un gasto
+              </ButtonLink>
+            }
           />
         </Card>
       </>
@@ -61,17 +71,20 @@ export default function HabitsPage() {
     <>
       {header}
 
-      <section className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-label="Resumen de hábitos">
+      <section
+        className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3"
+        aria-label="Resumen de hábitos"
+      >
         <StatCard
           label="Tramo de mayor gasto"
-          value={dominant ? dominant.label : 'Sin datos'}
+          value={dominant ? dominant.label : "Sin datos"}
           icon={CalendarRange}
-          tone={dominant ? 'coral' : 'ink'}
+          tone={dominant ? "coral" : "ink"}
           footer={
             <p className="text-xs break-all text-ink-500">
               {dominant
                 ? `${RHYTHM_RANGE[dominant.id]} · ${format(dominant.amount)} · ${formatPercent(dominant.percentage, 1)}`
-                : 'No hay gastos de consumo en el mes seleccionado.'}
+                : "No hay gastos de consumo en el mes seleccionado."}
             </p>
           }
         />
@@ -83,21 +96,21 @@ export default function HabitsPage() {
           footer={
             <p className="text-xs text-ink-500">
               {report.repeats.length === 0
-                ? 'Ninguna compra se repite lo suficiente en los últimos tres meses.'
-                : 'Grupos detectados en los últimos tres meses.'}
+                ? "Ninguna compra se repite lo suficiente en los últimos tres meses."
+                : "Grupos detectados en los últimos tres meses."}
             </p>
           }
         />
         <StatCard
           label="Categoría más estable"
-          value={steadiest ? steadiest.name : 'Sin datos'}
+          value={steadiest ? steadiest.name : "Sin datos"}
           icon={Activity}
-          tone={steadiest ? STABILITY_TONE[steadiest.level] : 'ink'}
+          tone={steadiest ? STABILITY_TONE[steadiest.level] : "ink"}
           footer={
             <p className="text-xs break-all text-ink-500">
               {steadiest
                 ? `${STABILITY_UI[steadiest.level].label} · promedio ${format(steadiest.mean)}`
-                : 'Hace falta gasto en al menos dos de los últimos tres meses.'}
+                : "Hace falta gasto en al menos dos de los últimos tres meses."}
             </p>
           }
         />

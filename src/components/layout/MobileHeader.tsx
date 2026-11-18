@@ -1,10 +1,10 @@
-import { Menu, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { Link } from 'react-router';
-import { Logo } from './Logo';
-import { NavList } from './NavList';
-import { UserCard } from './UserCard';
+import { Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { Link } from "react-router";
+import { Logo } from "./Logo";
+import { NavList } from "./NavList";
+import { UserCard } from "./UserCard";
 
 /** Barra superior compacta para celular y tablet, con menú lateral deslizable. */
 export function MobileHeader({ alertCount }: { alertCount: number }) {
@@ -14,12 +14,13 @@ export function MobileHeader({ alertCount }: { alertCount: number }) {
   useEffect(() => {
     if (!open) return;
     const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    const handleKeyDown = (event: KeyboardEvent) => event.key === 'Escape' && setOpen(false);
-    document.addEventListener('keydown', handleKeyDown);
+    document.body.style.overflow = "hidden";
+    const handleKeyDown = (event: KeyboardEvent) =>
+      event.key === "Escape" && setOpen(false);
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.body.style.overflow = previousOverflow;
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [open]);
 
@@ -34,9 +35,14 @@ export function MobileHeader({ alertCount }: { alertCount: number }) {
           aria-expanded={open}
         >
           <Menu className="size-6" />
-          {alertCount > 0 && <span className="absolute top-2 right-2 size-2.5 rounded-full bg-coral-500 ring-2 ring-cream-100" aria-hidden />}
+          {alertCount > 0 && (
+            <span
+              className="absolute top-2 right-2 size-2.5 rounded-full bg-coral-500 ring-2 ring-cream-100"
+              aria-hidden
+            />
+          )}
         </button>
-        <Link to="/" aria-label="Ir al dashboard">
+        <Link to="/app" aria-label="Ir al dashboard">
           <Logo />
         </Link>
         <span className="size-10" aria-hidden />
@@ -44,17 +50,36 @@ export function MobileHeader({ alertCount }: { alertCount: number }) {
 
       {open &&
         createPortal(
-          <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Menú de navegación">
-            <div className="absolute inset-0 animate-fade-in bg-ink-900/40 backdrop-blur-[2px]" onClick={close} aria-hidden />
+          <div
+            className="fixed inset-0 z-50 lg:hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menú de navegación"
+          >
+            <div
+              className="absolute inset-0 animate-fade-in bg-ink-900/40 backdrop-blur-[2px]"
+              onClick={close}
+              aria-hidden
+            />
             <div className="relative flex h-full w-72 max-w-[85vw] animate-slide-in-left flex-col bg-white px-4 py-5 shadow-soft">
               <div className="flex items-center justify-between px-2">
                 <Logo />
-                <button type="button" onClick={close} className="rounded-lg p-2 text-ink-500 hover:bg-ink-100" aria-label="Cerrar menú">
+                <button
+                  type="button"
+                  onClick={close}
+                  className="rounded-lg p-2 text-ink-500 hover:bg-ink-100"
+                  aria-label="Cerrar menú"
+                >
                   <X className="size-5" />
                 </button>
               </div>
-              <nav className="mt-6 flex-1 overflow-y-auto" aria-label="Navegación principal">
-                <p className="mb-2 px-3 text-[11px] font-semibold tracking-wider text-ink-400 uppercase">Menú</p>
+              <nav
+                className="mt-6 flex-1 overflow-y-auto"
+                aria-label="Navegación principal"
+              >
+                <p className="mb-2 px-3 text-[11px] font-semibold tracking-wider text-ink-400 uppercase">
+                  Menú
+                </p>
                 <NavList onNavigate={close} alertCount={alertCount} />
               </nav>
               <UserCard onNavigate={close} />

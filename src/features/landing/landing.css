@@ -1,0 +1,44 @@
+/* Estilos exclusivos de la landing de Moneta */
+
+.landing-page {
+  font-family: 'Inter Variable', Inter, system-ui, sans-serif;
+  color: #172c3c;
+  background: #f7f4ee;
+  min-height: 100vh;
+}
+
+.landing-page .text-balance {
+  text-wrap: balance;
+}
+
+.landing-page .soft-shadow {
+  box-shadow: 0 16px 45px rgba(21, 45, 61, 0.09);
+}
+
+.landing-page .nav-shadow {
+  box-shadow: 0 5px 28px rgba(21, 45, 61, 0.055);
+}
+
+.landing-page .hero-dots {
+  background-image: radial-gradient(#c0d8e5 1.05px, transparent 1.05px);
+  background-size: 19px 19px;
+}
+
+.landing-page .float-slow {
+  animation: landing-float 7s ease-in-out infinite;
+}
+
+@keyframes landing-float {
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-page *,
+  .landing-page *::before,
+  .landing-page *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
