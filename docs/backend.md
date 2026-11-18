@@ -31,10 +31,7 @@ El objetivo es guardar los datos en un servidor, con cuentas de usuario, sin cam
 
 **Lo más importante para este cambio:** ningún componente lee ni escribe `localStorage` directamente. Todas las pantallas usan `useAppData()` y llaman a `actions.*`. La persistencia está concentrada en `AppDataProvider.tsx` y `storage.ts`, así que el backend se conecta ahí y las pantallas casi no cambian.
 
-Hay otros dos datos guardados en el navegador que **no** hace falta mover, porque son preferencias de ese dispositivo:
-
-- Si la sidebar está contraída (`localStorage`, clave `balance-sidebar-collapsed`).
-- Si se cerró el aviso de datos de demostración (`sessionStorage`).
+Hay otro dato guardado en el navegador que **no** hace falta mover, porque es una preferencia de ese dispositivo: si se cerró el aviso de datos de demostración (`sessionStorage`).
 
 ---
 
@@ -304,7 +301,7 @@ Son datos financieros personales, así que esta parte no es opcional.
 - **Cálculos:** las estadísticas, los presupuestos, los hábitos y el asistente siguen en el navegador con las funciones de `src/domain/`. Una persona carga del orden de cientos a pocos miles de movimientos por año, así que traer todo con `GET /api/data` alcanza. Si en el futuro crece mucho, se puede pedir solo un rango de meses.
 - **Lectura de tickets:** sigue en el navegador; la foto no se sube al servidor.
 - **Formato del respaldo JSON:** igual que hoy, para exportar e importar.
-- **Preferencias de interfaz:** la sidebar contraída y el aviso de demo siguen en el navegador.
+- **Preferencias de interfaz:** el aviso de demo sigue en el navegador.
 
 ---
 

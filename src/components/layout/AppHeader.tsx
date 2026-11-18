@@ -1,13 +1,14 @@
-import { Menu, X } from "lucide-react";
+import { Menu, Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router";
+import { ButtonLink } from "@/components/ui/Button";
 import { Logo } from "./Logo";
 import { NavList } from "./NavList";
 import { UserCard } from "./UserCard";
 
-/** Barra superior compacta para celular y tablet, con menú lateral deslizable. */
-export function MobileHeader({ alertCount }: { alertCount: number }) {
+/** Barra superior de la app (igual en celular y escritorio), con menú lateral deslizable. */
+export function AppHeader({ alertCount }: { alertCount: number }) {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
 
@@ -26,32 +27,41 @@ export function MobileHeader({ alertCount }: { alertCount: number }) {
 
   return (
     <>
-      <header className="sticky top-0 z-40 flex h-16 items-center justify-between gap-3 border-b border-cream-300/70 bg-cream-100/90 px-4 backdrop-blur-md sm:px-6 lg:hidden">
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="relative -ml-1 flex size-10 items-center justify-center rounded-xl text-ink-700 hover:bg-cream-200"
-          aria-label="Abrir menú"
-          aria-expanded={open}
-        >
-          <Menu className="size-6" />
-          {alertCount > 0 && (
-            <span
-              className="absolute top-2 right-2 size-2.5 rounded-full bg-coral-500 ring-2 ring-cream-100"
-              aria-hidden
-            />
-          )}
-        </button>
-        <Link to="/app" aria-label="Ir al dashboard">
-          <Logo />
-        </Link>
-        <span className="size-10" aria-hidden />
+      <header className="sticky top-0 z-40 border-b border-cream-300/70 bg-cream-100/90 backdrop-blur-md">
+        <div className="mx-auto grid h-16 w-full max-w-[1400px] grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 sm:px-6 lg:px-10">
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="relative -ml-1 flex size-10 items-center justify-center justify-self-start rounded-xl text-ink-700 hover:bg-cream-200"
+            aria-label="Abrir menú"
+            aria-expanded={open}
+          >
+            <Menu className="size-6" />
+            {alertCount > 0 && (
+              <span
+                className="absolute top-2 right-2 size-2.5 rounded-full bg-coral-500 ring-2 ring-cream-100"
+                aria-hidden
+              />
+            )}
+          </button>
+          <Link to="/app" aria-label="Ir al dashboard">
+            <Logo />
+          </Link>
+          <ButtonLink
+            to="/app/movimientos?nuevo=gasto"
+            icon={Plus}
+            className="justify-self-end max-sm:w-10 max-sm:px-0"
+            aria-label="Nuevo movimiento"
+          >
+            <span className="hidden sm:inline">Nuevo movimiento</span>
+          </ButtonLink>
+        </div>
       </header>
 
       {open &&
         createPortal(
           <div
-            className="fixed inset-0 z-50 lg:hidden"
+            className="fixed inset-0 z-50"
             role="dialog"
             aria-modal="true"
             aria-label="Menú de navegación"

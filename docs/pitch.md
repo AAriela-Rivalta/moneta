@@ -71,6 +71,7 @@ Guion para armar la presentación en clase. Cada sección es una diapositiva y t
 - **Asistente explicable:** un motor de reglas propio, sin IA externa. Cada recomendación muestra los números que la justifican.
 - **Lectura de tickets en el dispositivo:** la foto se procesa en el navegador y no se guarda ni se envía.
 - **Sin cuenta ni servidor:** se abre y se usa. Los datos quedan en el navegador y se pueden exportar como respaldo.
+- **Se instala como una app:** desde el navegador, sin pasar por una tienda, y abre aunque no haya conexión.
 - **Lista para probar:** al entrar por primera vez se puede elegir entre 6 meses de datos de demostración o una cuenta limpia.
 
 **Para decir:** "Elegimos reglas propias en lugar de IA para que cada consejo sea predecible, verificable y explicable. Si el asistente dice que gastaste un 30% más en restaurantes, se puede comprobar."
@@ -83,6 +84,7 @@ Guion para armar la presentación en clase. Cada sección es una diapositiva y t
 
 **Contenido**
 
+- **Nuevo movimiento siempre a mano:** botón fijo en la barra superior de todas las pantallas.
 - **Movimientos:** alta, edición y eliminación con opción de deshacer.
 - Búsqueda sin importar tildes; filtros por tipo, categoría y fechas; orden y paginación.
 - Montos en formato local: `15000`, `15.000` o `15.000,50`.
@@ -148,17 +150,19 @@ Guion para armar la presentación en clase. Cada sección es una diapositiva y t
 
 **Recorrido sugerido**
 
-1. **Bienvenida:** elegir "datos de demostración".
-2. **Dashboard:** cambiar de mes y mostrar la comparación con el mes anterior.
-3. **Nuevo gasto con ticket:** adjuntar una foto y mostrar cómo se completan los campos.
-4. **Presupuestos:** mostrar una categoría en alerta y la sugerencia de límite.
-5. **Hábitos:** explicar el tramo del mes con más gasto.
-6. **Asistente:** leer una recomendación y mostrar las cifras que la justifican.
-7. **Sidebar:** contraerla y abrir la app en tamaño de celular para mostrar el diseño adaptable.
+1. **Página de inicio:** mostrar la landing y entrar con "Empezar a usar Moneta".
+2. **Bienvenida:** elegir "datos de demostración".
+3. **Dashboard:** cambiar de mes y mostrar la comparación con el mes anterior.
+4. **Nuevo gasto con ticket:** tocar "Nuevo movimiento" en la barra superior, adjuntar una foto y mostrar cómo se completan los campos.
+5. **Presupuestos:** mostrar una categoría en alerta y la sugerencia de límite.
+6. **Hábitos:** explicar el tramo del mes con más gasto.
+7. **Asistente:** leer una recomendación y mostrar las cifras que la justifican.
+8. **Menú e instalación:** abrir el menú lateral, mostrar la app en tamaño de celular (es el mismo diseño) e instalarla desde el navegador.
 
 **Antes de presentar**
 
 - Abrir la app una vez con internet y leer un ticket de prueba: la primera lectura descarga el motor de reconocimiento.
+- Para mostrar la instalación, usar la app publicada o `pnpm build` + `pnpm preview`: en `pnpm dev` no se puede instalar. Si ya estaba instalada en esa compu, desinstalarla antes.
 - Tener una foto de ticket nítida a mano.
 - Tener capturas de respaldo por si falla algo en vivo.
 
@@ -178,6 +182,7 @@ Guion para armar la presentación en clase. Cada sección es una diapositiva y t
 | Navegación | React Router 7 | Rutas con carga diferida |
 | Gráficos | Recharts 3 | Todos los gráficos con un estilo unificado |
 | Lectura de tickets | Tesseract.js 7 | Reconocimiento de texto dentro del navegador |
+| Instalación (PWA) | vite-plugin-pwa 2 | Manifiesto y service worker para instalarla y abrirla sin conexión |
 | Datos | `localStorage` | Persistencia sin backend |
 | Calidad | ESLint 9 + Vitest 4 | Análisis estático y pruebas unitarias |
 
@@ -256,7 +261,7 @@ flowchart LR
 - TypeScript en modo estricto y ESLint en todo el proyecto.
 - **Accesibilidad:** foco visible, diálogos accesibles, etiquetas en todos los controles y respeto de la preferencia de reducir movimiento.
 - **Paleta apta para daltonismo:** las leyendas siempre muestran nombre, porcentaje y monto, así que nada depende solo del color.
-- **Diseño adaptable:** sidebar contraíble en escritorio; menú lateral y formularios como hoja inferior en celular.
+- **Diseño adaptable:** el mismo diseño en celular y escritorio, con barra superior y menú lateral deslizable; en celular los formularios se abren como hoja inferior.
 
 **Visual:** captura de la terminal con `pnpm test` en verde.
 
@@ -266,10 +271,10 @@ flowchart LR
 
 | Cifra | Qué es |
 | --- | --- |
-| 9 | Pantallas (dashboard, movimientos, presupuestos, estadísticas, hábitos, objetivos, asistente, configuración y bienvenida) |
+| 10 | Pantallas (página de inicio, dashboard, movimientos, presupuestos, estadísticas, hábitos, objetivos, asistente, configuración y bienvenida) |
 | 13 | Reglas del asistente financiero |
 | 158 | Pruebas unitarias |
-| ~9.800 | Líneas de TypeScript, sin contar pruebas |
+| ~10.800 | Líneas de TypeScript, sin contar pruebas |
 | 0 | Servidores o APIs externas para guardar datos |
 
 ---
@@ -297,7 +302,7 @@ flowchart LR
 - **Backend con cuentas de usuario:** usar la app desde varios dispositivos sin perder datos. El diseño completo está en [`docs/backend.md`](backend.md).
 - **Migración automática** de los datos que hoy están en el navegador.
 - **Historial de aportes** a los objetivos de ahorro.
-- **Uso sin conexión** con caché local una vez que exista el servidor.
+- **Sincronización sin conexión:** la app ya abre sin internet; con el servidor, guardar los cambios hechos sin conexión y enviarlos al reconectar.
 
 **Para decir:** "Como toda la persistencia está concentrada en un solo lugar, conectar un servidor no obliga a reescribir las pantallas."
 
@@ -331,4 +336,7 @@ Se escribe un objeto con `id`, `name`, `description` y una función `evaluate` q
 Toda la lógica son funciones puras en `src/domain/`, así que se prueban con Vitest sin abrir un navegador. Hay una fábrica de datos de ejemplo para que cada prueba declare solo lo que necesita.
 
 **¿Funciona en el celular?**
-Sí, es responsive: menú lateral, formularios como hoja inferior y, al cargar un gasto, se puede sacar la foto del ticket directamente con la cámara.
+Sí: tiene el mismo diseño en celular y en escritorio, se puede agregar a la pantalla de inicio como una app y, al cargar un gasto, se puede sacar la foto del ticket directamente con la cámara.
+
+**¿Funciona sin internet?**
+Sí, después de la primera visita: el service worker guarda la app en el dispositivo y los datos ya están en el navegador. La excepción es la lectura de tickets, que necesita internet para descargar el motor de reconocimiento.

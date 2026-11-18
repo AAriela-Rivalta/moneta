@@ -3,7 +3,6 @@ import {
   ArrowRight,
   ArrowUpCircle,
   Landmark,
-  Plus,
   Receipt,
   Scale,
   Sparkles,
@@ -102,17 +101,7 @@ export default function DashboardPage() {
     <PageHeader
       title={greeting}
       description={`Este es el resumen de tus finanzas de ${monthLabel.toLowerCase()}.`}
-      actions={
-        <>
-          <PeriodSelector />
-          {/* En celular ya existe el botón "+" de la barra superior. */}
-          <div className="hidden sm:block">
-            <ButtonLink to="/app/movimientos?nuevo=gasto" icon={Plus}>
-              Nuevo movimiento
-            </ButtonLink>
-          </div>
-        </>
-      }
+      actions={<PeriodSelector />}
     />
   );
 
@@ -128,14 +117,14 @@ export default function DashboardPage() {
             action={
               <div className="flex flex-wrap justify-center gap-2">
                 <ButtonLink
-                  to="/movimientos?nuevo=ingreso"
+                  to="/app/movimientos?nuevo=ingreso"
                   variant="soft"
                   icon={ArrowUpCircle}
                 >
                   Registrar ingreso
                 </ButtonLink>
                 <ButtonLink
-                  to="/movimientos?nuevo=gasto"
+                  to="/app/movimientos?nuevo=gasto"
                   variant="coral"
                   icon={ArrowDownCircle}
                 >

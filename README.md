@@ -15,6 +15,7 @@ Proyecto final de la Tecnicatura Superior en Desarrollo de Software.
 | Gráficos           | Recharts 3                                                    |
 | Íconos             | Lucide React                                                  |
 | Lectura de tickets | Tesseract.js 7 (reconocimiento de texto dentro del navegador) |
+| Instalación (PWA)  | vite-plugin-pwa 2 (manifiesto + service worker con Workbox)   |
 | Persistencia       | `localStorage` (sin backend, sin APIs externas)               |
 | Calidad            | ESLint 9 + typescript-eslint + reglas de hooks                |
 | Pruebas            | Vitest 4 (pruebas unitarias de la lógica de negocio)          |
@@ -34,22 +35,26 @@ pnpm test        # corre las pruebas unitarias una vez
 pnpm test:watch  # corre las pruebas cada vez que se guarda un archivo
 ```
 
-> Al publicar el build en un hosting estático, configurar el _fallback_ de rutas a `index.html` (la app usa rutas del navegador, por ejemplo `/movimientos`).
+> La página de inicio (landing) está en `/` y la aplicación en `/app`. Al publicar el build en un hosting estático, configurar el _fallback_ de rutas a `index.html` (la app usa rutas del navegador, por ejemplo `/app/movimientos`).
+
+> El service worker solo se genera en el build: para probar la instalación y el uso sin conexión, usar `pnpm build` y después `pnpm preview`. En `pnpm dev` la app no se puede instalar.
 
 > La lectura de tickets necesita conexión a internet: Tesseract.js descarga el motor de reconocimiento y el modelo de idioma español desde el CDN de jsDelivr (el modelo queda guardado en el navegador para las siguientes lecturas). La foto nunca sale del dispositivo.
 
 ## Funcionalidades
 
+- **Página de inicio (landing):** presenta Moneta antes de entrar: beneficios, recorrido por las pantallas con capturas, cómo instalarla y preguntas frecuentes. El botón _Empezar a usar Moneta_ lleva a la app.
+- **Instalable (PWA):** se puede instalar en la compu o agregar a la pantalla de inicio del celular, y se abre como una aplicación, sin la barra del navegador. Después de la primera visita abre sin conexión, porque el service worker guarda la app en el dispositivo y los datos ya están en el navegador. La lectura de tickets sigue necesitando internet.
 - **Primer uso:** pantalla de bienvenida para elegir entre datos de demostración (6 meses de movimientos, presupuestos y objetivos) o una cuenta limpia. La demo se puede borrar o restablecer en cualquier momento.
 - **Dashboard:** saldo disponible, ingresos, gastos y balance del mes con comparación contra el mes anterior; gráficos de ingresos vs. gastos, distribución por categoría y evolución del saldo; últimos movimientos; presupuestos próximos a agotarse; resumen del asistente. Filtro por mes y año.
-- **Movimientos:** alta, edición y eliminación (con opción de deshacer); búsqueda por descripción, observación o categoría; filtros por tipo, categoría y rango de fechas; orden por fecha o monto; paginación; tabla en escritorio y lista en celular.
+- **Movimientos:** alta desde el botón _Nuevo movimiento_ de la barra superior, disponible en todas las pantallas; edición y eliminación (con opción de deshacer); búsqueda por descripción, observación o categoría; filtros por tipo, categoría y rango de fechas; orden por fecha o monto; paginación; tabla en escritorio y lista en celular.
 - **Lectura de tickets:** al cargar un gasto se puede adjuntar una foto del ticket (o sacarla con la cámara en el celular). La app reconoce el texto en el dispositivo y completa comercio, monto y fecha, y sugiere una categoría según los gastos anteriores. Solo completa los campos vacíos, muestra lo que encontró para revisarlo antes de guardar y no guarda la imagen.
 - **Presupuestos:** límite por categoría y mes; monto gastado, disponible, porcentaje y barra de progreso; alertas al 80% y al superar el 100%; monto diario disponible; sugerencia de límite según el historial; copia desde el mes anterior; categorías con gasto sin presupuesto.
 - **Estadísticas:** rango de 3, 6 o 12 meses; ingresos vs. gastos; evolución del balance mensual; gastos e ingresos por categoría; ranking de categorías; comparación libre entre dos meses; gasto por día de la semana; datos destacados.
 - **Hábitos financieros:** ritmo del mes (cuánto se gasta al inicio, al medio y al cierre), compras que se repiten seguido y estabilidad del gasto por categoría en los últimos tres meses. Filtro por mes y año.
 - **Objetivos de ahorro:** nombre, monto objetivo, monto ahorrado, fecha límite y progreso; aportes y retiros que opcionalmente generan el movimiento correspondiente; simulador por fecha límite o por aporte mensual, con proyección gráfica y viabilidad según la capacidad real de ahorro.
 - **Asistente financiero:** puntaje de salud financiera, métricas clave, recomendaciones priorizadas, gastos recurrentes detectados y explicación del algoritmo.
-- **Configuración:** se abre desde la tarjeta de perfil al pie del menú. Nombre de usuario, moneda (ARS por defecto), gestión de categorías, exportación e importación de respaldos JSON, restablecer demo y borrar datos.
+- **Configuración:** se abre desde la tarjeta de perfil al pie del menú lateral. Nombre de usuario, moneda (ARS por defecto), gestión de categorías, exportación e importación de respaldos JSON, restablecer demo y borrar datos.
 
 ## Arquitectura
 
@@ -80,11 +85,11 @@ src/
 ├── components/
 │   ├── ui/          Componentes reutilizables (Button, Card, Modal, StatCard, ProgressBar…)
 │   ├── charts/      Gráficos de Recharts con estilo unificado
-│   ├── layout/      Sidebar colapsable, barra móvil, layout principal
+│   ├── layout/      Barra superior, menú lateral deslizable y layout principal
 │   └── shared/      Componentes compartidos entre pantallas
 └── features/        Una carpeta por pantalla con sus componentes propios
-    ├── dashboard/  transactions/  budgets/  statistics/  habits/
-    ├── goals/  assistant/  settings/  onboarding/  not-found/
+    ├── landing/  dashboard/  transactions/  budgets/  statistics/
+    ├── habits/  goals/  assistant/  settings/  onboarding/  not-found/
 ```
 
 ### Flujo de datos
@@ -158,6 +163,6 @@ Como la lógica de negocio son funciones puras sin React, se prueba con **Vitest
 
 - Paleta: celeste como color principal, coral para gastos y alertas, crema y beige para fondos, blanco para tarjetas y tonos oscuros para texto.
 - Los colores de categorías provienen de una paleta categórica validada para daltonismo. Cada categoría conserva su color en todos los gráficos, y las leyendas siempre muestran nombre, porcentaje y monto, por lo que la información no depende solo del color.
-- Responsive: sidebar en escritorio y barra superior con menú lateral en celular y tablet. Los formularios se abren como hoja inferior en celular.
-- En escritorio la sidebar se puede contraer para mostrar solo los íconos (con el nombre de cada sección como tooltip y el contador de alertas del asistente). La app recuerda la preferencia en `localStorage`.
+- Responsive con el mismo diseño en celular, tablet y escritorio: una barra superior fija con el botón de menú, el logo y _Nuevo movimiento_. El menú se abre como un panel lateral deslizable, con el contador de alertas del asistente y la tarjeta de perfil.
+- En celular el botón _Nuevo movimiento_ se reduce a un ícono "+" y los formularios se abren como hoja inferior.
 - Accesibilidad: foco visible, diálogos con `aria-modal` y foco atrapado, etiquetas en todos los controles y respeto de `prefers-reduced-motion`.
