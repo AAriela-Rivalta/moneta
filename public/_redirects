@@ -1,0 +1,3 @@
+# La app usa rutas del navegador (/app, /app/movimientos…): cualquier ruta que no sea un archivo real
+# se responde con index.html y React Router muestra la pantalla que corresponde.
+/*    /index.html    200

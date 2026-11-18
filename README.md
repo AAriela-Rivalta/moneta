@@ -35,7 +35,7 @@ pnpm test        # corre las pruebas unitarias una vez
 pnpm test:watch  # corre las pruebas cada vez que se guarda un archivo
 ```
 
-> La página de inicio (landing) está en `/` y la aplicación en `/app`. Al publicar el build en un hosting estático, configurar el _fallback_ de rutas a `index.html` (la app usa rutas del navegador, por ejemplo `/app/movimientos`).
+> La página de inicio (landing) está en `/` y la aplicación en `/app`. Al publicar el build en un hosting estático, configurar el _fallback_ de rutas a `index.html` (la app usa rutas del navegador, por ejemplo `/app/movimientos`). Para Netlify ya está incluido en `public/_redirects`. Sin esa regla, la app instalada muestra un 404 al abrirse, porque arranca directo en `/app`.
 
 > El service worker solo se genera en el build: para probar la instalación y el uso sin conexión, usar `pnpm build` y después `pnpm preview`. En `pnpm dev` la app no se puede instalar.
 
