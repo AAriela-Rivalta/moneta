@@ -1,8 +1,7 @@
-import { Menu, Plus, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router';
-import { ButtonLink } from '@/components/ui/Button';
 import { Logo } from './Logo';
 import { NavList } from './NavList';
 import { UserCard } from './UserCard';
@@ -40,7 +39,7 @@ export function MobileHeader({ alertCount }: { alertCount: number }) {
         <Link to="/" aria-label="Ir al dashboard">
           <Logo />
         </Link>
-        <ButtonLink to="/movimientos?nuevo=gasto" size="icon" icon={Plus} aria-label="Nuevo movimiento" />
+        <span className="size-10" aria-hidden />
       </header>
 
       {open &&
@@ -55,6 +54,7 @@ export function MobileHeader({ alertCount }: { alertCount: number }) {
                 </button>
               </div>
               <nav className="mt-6 flex-1 overflow-y-auto" aria-label="Navegación principal">
+                <p className="mb-2 px-3 text-[11px] font-semibold tracking-wider text-ink-400 uppercase">Menú</p>
                 <NavList onNavigate={close} alertCount={alertCount} />
               </nav>
               <UserCard onNavigate={close} />
