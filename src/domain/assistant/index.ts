@@ -26,7 +26,7 @@ export function generateAssistantReport(data: AppData, monthKey: MonthKey, today
       topic: 'balance',
       title: `Todavía no hay movimientos en ${ctx.monthLabel}`,
       message: 'Registrá tus ingresos y gastos para que el asistente pueda analizar tus finanzas y generar recomendaciones.',
-      action: { label: 'Registrar movimiento', to: '/movimientos?nuevo=gasto' },
+      action: { label: 'Registrar movimiento', to: '/app/movimientos?nuevo=gasto' },
     });
   }
 

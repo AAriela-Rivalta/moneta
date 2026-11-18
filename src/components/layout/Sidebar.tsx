@@ -1,9 +1,9 @@
-import { Menu } from 'lucide-react';
-import { Link } from 'react-router';
-import { cn } from '@/lib/cn';
-import { Logo, LogoMark } from './Logo';
-import { NavList } from './NavList';
-import { UserCard } from './UserCard';
+import { Menu } from "lucide-react";
+import { Link } from "react-router";
+import { cn } from "@/lib/cn";
+import { Logo, LogoMark } from "./Logo";
+import { NavList } from "./NavList";
+import { UserCard } from "./UserCard";
 
 interface SidebarProps {
   alertCount: number;
@@ -15,8 +15,8 @@ export function Sidebar({ alertCount, collapsed, onToggle }: SidebarProps) {
   return (
     <aside
       className={cn(
-        'sticky top-0 hidden h-dvh shrink-0 flex-col border-r border-cream-300/70 bg-white px-3 py-5 transition-[width] duration-200 ease-out lg:flex',
-        collapsed ? 'w-[76px]' : 'w-[280px] px-4',
+        "sticky top-0 hidden h-dvh shrink-0 flex-col border-r border-cream-300/70 bg-white px-3 py-5 transition-[width] duration-200 ease-out lg:flex",
+        collapsed ? "w-[76px]" : "w-[280px] px-4",
       )}
     >
       {collapsed ? (
@@ -44,7 +44,11 @@ export function Sidebar({ alertCount, collapsed, onToggle }: SidebarProps) {
         </>
       ) : (
         <>
-          <Link to="/" className="flex h-11 items-center rounded-lg px-1" aria-label="Ir al dashboard">
+          <Link
+            to="/app"
+            className="flex h-11 items-center rounded-lg px-1"
+            aria-label="Ir al dashboard"
+          >
             <Logo />
           </Link>
           <button
@@ -59,8 +63,15 @@ export function Sidebar({ alertCount, collapsed, onToggle }: SidebarProps) {
           </button>
         </>
       )}
-      <nav className={cn('flex-1 overflow-y-auto', collapsed ? 'mt-8' : 'mt-3')} aria-label="Navegación principal">
-        {!collapsed && <p className="mb-2 px-3 text-[11px] font-semibold tracking-wider text-ink-400 uppercase">Menú</p>}
+      <nav
+        className={cn("flex-1 overflow-y-auto", collapsed ? "mt-8" : "mt-3")}
+        aria-label="Navegación principal"
+      >
+        {!collapsed && (
+          <p className="mb-2 px-3 text-[11px] font-semibold tracking-wider text-ink-400 uppercase">
+            Menú
+          </p>
+        )}
         <NavList alertCount={alertCount} collapsed={collapsed} />
       </nav>
       <UserCard collapsed={collapsed} />
