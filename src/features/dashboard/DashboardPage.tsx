@@ -263,7 +263,7 @@ export default function DashboardPage() {
             description={`Registrados hasta ${monthLabel.toLowerCase()}`}
             action={
               <Link
-                to="/movimientos"
+                to="/app/movimientos"
                 className="inline-flex items-center gap-1 text-sm font-semibold text-brand-700 hover:text-brand-800"
               >
                 Ver todos <ArrowRight className="size-4" aria-hidden />
